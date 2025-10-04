@@ -1,0 +1,31 @@
+import time
+import sys
+
+class ProgressBar:
+    def __init__(self, total, length=40, prefix='', suffix='', fill='█'):
+        self.total = total
+        self.length = length
+        self.prefix = prefix
+        self.suffix = suffix
+        self.fill = fill
+        self.start_time = time.time()
+
+    def update(self, iteration):
+        percent = iteration / self.total
+        filled_length = int(self.length * percent)
+        bar = self.fill * filled_length + '-' * (self.length - filled_length)
+        elapsed = time.time() - self.start_time
+        eta = (elapsed / iteration) * (self.total - iteration) if iteration else 0
+        sys.stdout.write(
+            f'\r{self.prefix} |{bar}| {percent:.0%} {self.suffix} | ETA: {eta:.1f}s'
+        )
+        sys.stdout.flush()
+        if iteration == self.total:
+            print()
+
+if __name__ == "__main__":
+    tasks = 50
+    pb = ProgressBar(tasks, prefix='Processing', suffix='Complete')
+    for i in range(1, tasks + 1):
+        time.sleep(0.1)
+        pb.update(i)
